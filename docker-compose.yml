@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    container_name: falren-admin-web-stg
+    command: bash -lc "bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
+    volumes: [".:/app"]
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
+      REDIS_URL: redis://redis:6379/0
+    depends_on: ["db","redis"]
+    networks: ["default","traefik"]
+    labels:
+      - "traefik.enable=true"
+      - 'traefik.http.routers.admin-stg.rule=Host(`admin.stg.falren.com`)'
+      - "traefik.http.routers.admin-stg.entrypoints=websecure"
+      - "traefik.http.routers.admin-stg.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.admin-stg.loadbalancer.server.port=3000"
+
+  worker:
+    build: .
+    container_name: falren-admin-worker-stg
+    command: bash -lc "bundle exec sidekiq"
+    volumes: [".:/app"]
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
+      REDIS_URL: redis://redis:6379/0
+    depends_on: ["db","redis"]
+
+  db:
+    image: postgres:16
+    container_name: falren-admin-db-stg
+    environment: { POSTGRES_PASSWORD: postgres }
+    volumes: ["./volumes/db:/var/lib/postgresql/data"]
+
+  redis:
+    image: redis:7-alpine
+    container_name: falren-admin-redis-stg
+    volumes: ["./volumes/redis:/data"]
+
+networks:
+  traefik:
+    external: true
