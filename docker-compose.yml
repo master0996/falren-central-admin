@@ -1,44 +1,189 @@
 services:
+services:
+services:
+services:
+  web:
+  web:
+  web:
   web:
     build: .
+    build: .
+    build: .
+    build: .
+    container_name: falren-admin-web-stg
+    container_name: falren-admin-web-stg
+    container_name: falren-admin-web-stg
     container_name: falren-admin-web-stg
     command: bash -lc "bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
+    command: bash -lc "bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
+    command: bash -lc "bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
+    command: bash -lc "bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
     volumes: [".:/app"]
+    volumes: [".:/app"]
+    volumes:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    environment:
+    environment:
+    environment:
     environment:
       RAILS_ENV: development
+      RAILS_ENV: development
+      RAILS_ENV: development
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
       REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379/0
+    depends_on: ["db","redis"]
+    depends_on: ["db","redis"]
+    depends_on: ["db","redis"]
     depends_on: ["db","redis"]
     networks: ["default","traefik"]
+    networks: ["default","traefik"]
+    networks: ["default","traefik"]
+    networks: ["default","traefik"]
+    labels:
+    labels:
+    labels:
     labels:
       - "traefik.enable=true"
+      - "traefik.enable=true"
+      - "traefik.enable=true"
+      - "traefik.enable=true"
+      - 'traefik.http.routers.admin-stg.rule=Host(`admin.stg.falren.com`)'
+      - 'traefik.http.routers.admin-stg.rule=Host(`admin.stg.falren.com`)'
+      - 'traefik.http.routers.admin-stg.rule=Host(`admin.stg.falren.com`)'
       - 'traefik.http.routers.admin-stg.rule=Host(`admin.stg.falren.com`)'
       - "traefik.http.routers.admin-stg.entrypoints=websecure"
+      - "traefik.http.routers.admin-stg.entrypoints=websecure"
+      - "traefik.http.routers.admin-stg.entrypoints=websecure"
+      - "traefik.http.routers.admin-stg.entrypoints=websecure"
+      - "traefik.http.routers.admin-stg.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.admin-stg.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.admin-stg.tls.certresolver=letsEncrypt"
       - "traefik.http.routers.admin-stg.tls.certresolver=letsEncrypt"
       - "traefik.http.services.admin-stg.loadbalancer.server.port=3000"
+      - "traefik.http.services.admin-stg.loadbalancer.server.port=3000"
+      - "traefik.http.services.admin-stg.loadbalancer.server.port=3000"
+      - "traefik.http.services.admin-stg.loadbalancer.server.port=3000"
+
+
+
 
   worker:
+  worker:
+  worker:
+  worker:
+    build: .
+    build: .
+    build: .
     build: .
     container_name: falren-admin-worker-stg
+    container_name: falren-admin-worker-stg
+    container_name: falren-admin-worker-stg
+    container_name: falren-admin-worker-stg
+    command: bash -lc "bundle exec sidekiq"
+    command: bash -lc "bundle exec sidekiq"
+    command: bash -lc "bundle exec sidekiq"
     command: bash -lc "bundle exec sidekiq"
     volumes: [".:/app"]
+    volumes:
+      - redis_data:/data
+    volumes:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    environment:
+    environment:
+    environment:
     environment:
       RAILS_ENV: development
+      RAILS_ENV: development
+      RAILS_ENV: development
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
       REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379/0
+      REDIS_URL: redis://redis:6379/0
+    depends_on: ["db","redis"]
+    depends_on: ["db","redis"]
+    depends_on: ["db","redis"]
     depends_on: ["db","redis"]
 
+
+
+
+  db:
+  db:
+  db:
   db:
     image: postgres:16
+    image: postgres:16
+    image: postgres:16
+    image: postgres:16
+    container_name: falren-admin-db-stg
+    container_name: falren-admin-db-stg
+    container_name: falren-admin-db-stg
     container_name: falren-admin-db-stg
     environment: { POSTGRES_PASSWORD: postgres }
+    environment: { POSTGRES_PASSWORD: postgres }
+    environment: { POSTGRES_PASSWORD: postgres }
+    environment: { POSTGRES_PASSWORD: postgres }
     volumes: ["./volumes/db:/var/lib/postgresql/data"]
+    volumes:
+      - redis_data:/data
+    volumes:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+
+
+
 
   redis:
+  redis:
+  redis:
+  redis:
+    image: redis:7-alpine
+    image: redis:7-alpine
+    image: redis:7-alpine
     image: redis:7-alpine
     container_name: falren-admin-redis-stg
+    container_name: falren-admin-redis-stg
+    container_name: falren-admin-redis-stg
+    container_name: falren-admin-redis-stg
     volumes: ["./volumes/redis:/data"]
+    volumes:
+      - redis_data:/data
+    volumes: ["./volumes/redis:/data"]
+    volumes:
+      - redis_data:/data
+
+
+
 
 networks:
+networks:
+networks:
+networks:
+  traefik:
+  traefik:
+  traefik:
   traefik:
     external: true
+    external: true
+    external: true
+    external: true
+volumes:
+  db_data:
+  redis_data:
