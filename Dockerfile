@@ -14,7 +14,8 @@ WORKDIR /app
 COPY Gemfile Gemfile.lock ./
 RUN bundle config set path '/usr/local/bundle' \
  && bundle config set jobs 4 \
- && bundle install
+ && bundle config set without 'production' \
+ && bundle install --retry 3
 
 COPY . .
 EXPOSE 3000
