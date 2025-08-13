@@ -1,0 +1,12 @@
+/admin/tmp/
+/admin/log/*.log
+/vendor/bundle/
+/node_modules/
+.env*
+.DS_Store
+/log/
+/tmp/
+/storage/
+.byebug_history
+config/master.key
+config/credentials*.yml.enc
