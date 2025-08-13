@@ -5,16 +5,13 @@ services:
     command: bash -lc "bin/rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
     volumes:
       - .:/app
+      - bundle:/usr/local/bundle
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
       REDIS_URL: redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
-    networks:
-      - default
-      - traefik
+    depends_on: [db, redis]
+    networks: [default, traefik]
     labels:
       - traefik.enable=true
       - 'traefik.http.routers.admin-stg.rule=Host(`admin.stg.falren.com`)'
@@ -28,19 +25,17 @@ services:
     command: bash -lc "bundle exec sidekiq"
     volumes:
       - .:/app
+      - bundle:/usr/local/bundle
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/falren_admin_development
       REDIS_URL: redis://redis:6379/0
-    depends_on:
-      - db
-      - redis
+    depends_on: [db, redis]
 
   db:
     image: postgres:16
     container_name: falren-admin-db-stg
-    environment:
-      POSTGRES_PASSWORD: postgres
+    environment: { POSTGRES_PASSWORD: postgres }
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -57,3 +52,4 @@ networks:
 volumes:
   db_data:
   redis_data:
+  bundle:
